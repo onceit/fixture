@@ -1,9 +1,11 @@
 <?php
 
+namespace Codesleeve\Fixture\Test;
+
 use Codesleeve\Fixture\Fixture;
 use Mockery as m;
 
-class FixtureTest extends PHPUnit_Framework_TestCase
+class FixtureTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * An instance of the fixture class.

@@ -70,14 +70,16 @@ class Fixture
         return $instance;
     }
 
-    /**
-     * Protected constructor to prevent creating a new instance of the
-     * *Singleton* via the `new` operator from outside of this class.
-     *
-     * @return void
-     */
-    protected function __construct()
+
+    public function __construct(array $config = [], DriverInterface $driver = null)
     {
+        if ($config) {
+            $this->config = $config;
+        }
+
+        if ($driver) {
+            $this->driver = $driver;
+        }
     }
 
     /**

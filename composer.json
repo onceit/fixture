@@ -22,9 +22,6 @@
     "autoload": {
         "psr-4": {
             "Codesleeve\\Fixture\\": "src/Codesleeve/Fixture/"
-        },
-        "classmap": [
-            "tests/eloquent_models"
-        ]
+        }
     }
 }

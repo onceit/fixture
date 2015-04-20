@@ -1,8 +1,10 @@
 <?php
 
+namespace Codesleeve\Fixture\Test\KeyGenerators;
+
 use Codesleeve\Fixture\KeyGenerators\Crc32KeyGenerator;
 
-class Crc32KeyGeneratorTest extends PHPUnit_Framework_TestCase
+class Crc32KeyGeneratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testReturnsValidKey()
     {

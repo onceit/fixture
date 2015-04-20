@@ -1,8 +1,10 @@
 <?php
 
+namespace Codesleeve\Fixture\Test\KeyGenerators;
+
 use Codesleeve\Fixture\KeyGenerators\SHA1KeyGenerator;
 
-class SHA1KeyGeneratorTest extends PHPUnit_Framework_TestCase
+class SHA1KeyGeneratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testReturnsValidKey()
     {
