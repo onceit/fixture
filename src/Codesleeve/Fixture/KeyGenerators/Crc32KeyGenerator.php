@@ -10,7 +10,6 @@ class Crc32KeyGenerator implements KeyGeneratorInterface
 {
     /**
      * Constructor method
-     *
      */
     public function __construct()
     {
@@ -22,6 +21,6 @@ class Crc32KeyGenerator implements KeyGeneratorInterface
      */
     public function generateKey($value)
     {
-        return (int) crc32($value) % MAX_ID;
+        return (int) crc32($value) % constant(__NAMESPACE__ .'\MAX_ID');
     }
 }

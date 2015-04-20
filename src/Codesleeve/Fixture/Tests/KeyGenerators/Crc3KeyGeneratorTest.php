@@ -15,4 +15,10 @@ class Crc32KeyGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(9, strlen($key));
         $this->assertEquals(208889123, $key);
     }
+
+    public function testMaxIdIsSet()
+    {
+        $this->assertTrue(defined('Codesleeve\\Fixture\\KeyGenerators\\MAX_ID'));
+        $this->assertEquals(1073741823, constant('Codesleeve\\Fixture\\KeyGenerators\\MAX_ID'));
+    }
 }
