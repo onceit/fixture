@@ -7,6 +7,8 @@ use Codesleeve\Fixture\Drivers\Eloquent;
 use Illuminate\Database\SQLiteConnection;
 use Illuminate\Database\ConnectionResolver;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use PDO;
 
 class Eloquent2Test extends \PHPUnit_Framework_TestCase
 {
@@ -19,26 +21,30 @@ class Eloquent2Test extends \PHPUnit_Framework_TestCase
             return;
         }
 
-        $this->db = new \PDO('sqlite::memory:');
-        $this->db->exec(file_get_contents(
-            __DIR__ . '/Fixtures/setUp.sql'
-        ));
+        $this->bootstrapEloquent();
 
+        $this->db = $this->capsule->getConnection()->getPDO();
+        $this->db->exec(file_get_contents(
+            __DIR__ . '/Fixtures/setup.sql'
+        ));
         $this->fixture = new Fixture(
             [],
-            new Eloquent($this->db)
+            new Eloquent(
+                $this->db,
+                null,
+                'Codesleeve\\Fixture\\Tests\\Drivers\\Fixtures'
+            )
         );
-
-        $this->bootstrapEloquent();
     }
 
     private function bootstrapEloquent()
     {
-        $resolver = new ConnectionResolver([
-            'sqlite' => new SQLiteConnection($this->db)
-        ]);
-        $resolver->setDefaultConnection('sqlite');
-        Model::setConnectionResolver($resolver);
+        $this->capsule = new Capsule();
+        $this->capsule->addConnection([
+            'driver' => 'sqlite',
+            'database' => ':memory:'
+        ], 'default');
+        $this->capsule->bootEloquent();
     }
 
     public function testStableIds()
@@ -64,7 +70,7 @@ class Eloquent2Test extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         $this->db->exec(file_get_contents(
-            __DIR__ . '/Fixtures/tearDown.sql'
+            __DIR__ . '/Fixtures/teardown.sql'
         ));
     }
 }

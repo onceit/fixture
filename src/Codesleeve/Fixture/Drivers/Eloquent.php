@@ -9,9 +9,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 use PDO;
+use InvalidArgumentException;
 
 class Eloquent extends PDODriver implements DriverInterface
 {
+
+    /**
+     * The namespace of which to look for classes in
+     *
+     * @var string
+     */
+    protected $namespace;
+
     /**
      * An instance of Laravel's Str class.
      *
@@ -25,11 +34,35 @@ class Eloquent extends PDODriver implements DriverInterface
      * @param  DatabaseManager $db
      * @param  KeyGeneratorInterface $keyGenerator
      */
-    public function __construct(PDO $pdo, KeyGeneratorInterface $keyGenerator = null)
+    public function __construct(PDO $pdo, KeyGeneratorInterface $keyGenerator = null, $namespace = '')
     {
         $this->str = new Str();
+        $this->namespace = rtrim($namespace, '\\');
 
         parent::__construct($pdo, $keyGenerator);
+    }
+
+    /**
+     * Resolves the fully qualified name of table's corresponding model
+     *
+     * @param string $tableName
+     * @return string
+     *
+     * @throws InvalidArgumentException if the class cant be resolved
+     */
+    private function resolveModel($tableName)
+    {
+        $className = $this->str->studly(
+            $this->str->singular($tableName)
+        );
+
+        $fullyQualified = $this->namespace . '\\' . $className;
+
+        if (class_exists($fullyQualified)){
+            return $fullyQualified;
+        };
+
+        throw new InvalidArgumentException(sprintf('Can\'t resolve a class for %s', $tableName));
     }
 
     /**
@@ -45,7 +78,7 @@ class Eloquent extends PDODriver implements DriverInterface
         $this->tables[$tableName] = $tableName;
 
         foreach ($records as $recordName => $recordValues) {
-            $model = $this->generateModelName($tableName);
+            $model = $this->resolveModel($tableName);
             $record = new $model;
 
             foreach ($recordValues as $columnName => $columnValue) {
@@ -183,16 +216,5 @@ class Eloquent extends PDODriver implements DriverInterface
         }
 
         return [$fields, $values];
-    }
-
-    /**
-     * Generate the name of table's corresponding model.
-     *
-     * @param  string $tableName
-     * @return string
-     */
-    protected function generateModelName($tableName)
-    {
-        return $this->str->singular(str_replace(' ', '', ucwords(str_replace('_', ' ', $tableName))));
     }
 }
