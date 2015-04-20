@@ -4,6 +4,10 @@ use Codesleeve\Fixture\Fixture;
 use Codesleeve\Fixture\Drivers\Eloquent;
 use Mockery as m;
 
+include __DIR__ . '/Fixtures/Game.php';
+include __DIR__ . '/Fixtures/Role.php';
+include __DIR__ . '/Fixtures/User.php';
+
 class EloquentTest extends PHPUnit_Framework_TestCase
 {
     /**
@@ -49,7 +53,7 @@ class EloquentTest extends PHPUnit_Framework_TestCase
      */
     public function it_should_populate_all_fixtures()
     {
-        $this->fixture->setConfig(['location' => __DIR__ . '/fixtures/orm']);
+        $this->fixture->setConfig(['location' => __DIR__ . '/../Fixtures/orm']);
         $this->fixture->up();
 
         list($userCount, $roleCount, $gameCount) = $this->getRecordCounts();
@@ -74,7 +78,7 @@ class EloquentTest extends PHPUnit_Framework_TestCase
      */
     public function it_should_populate_only_some_fixtures()
     {
-        $this->fixture->setConfig(['location' => __DIR__ . '/fixtures/orm']);
+        $this->fixture->setConfig(['location' => __DIR__ . '/../Fixtures/orm']);
         $this->fixture->up(['users']);
 
         list($userCount, $roleCount, $gameCount) = $this->getRecordCounts();
@@ -95,7 +99,7 @@ class EloquentTest extends PHPUnit_Framework_TestCase
      */
     public function it_should_truncate_all_fixtures()
     {
-        $this->fixture->setConfig(['location' => __DIR__ . '/fixtures/orm']);
+        $this->fixture->setConfig(['location' => __DIR__ . '/../Fixtures/orm']);
         $this->fixture->up();
         $this->fixture->down();
 
@@ -115,7 +119,7 @@ class EloquentTest extends PHPUnit_Framework_TestCase
      */
     public function it_should_populate_fixture_join_column_data()
     {
-        $this->fixture->setConfig(['location' => __DIR__ . '/fixtures/orm']);
+        $this->fixture->setConfig(['location' => __DIR__ . '/../Fixtures/orm']);
         $this->fixture->up(['users', 'roles']);
 
         $this->assertEquals(1, $this->fixture->users('Travis')->roles[0]->pivot->active);

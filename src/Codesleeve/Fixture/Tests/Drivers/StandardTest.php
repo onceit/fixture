@@ -49,7 +49,7 @@ class StandardTest extends PHPUnit_Framework_TestCase
      */
     public function it_should_populate_all_fixtures()
     {
-        $this->fixture->setConfig(['location' => __DIR__ . '/fixtures/standard']);
+        $this->fixture->setConfig(['location' => __DIR__ . '/../Fixtures/standard']);
         $this->fixture->up();
 
         list($userCount, $roleCount, $gameCount) = $this->getRecordCounts();
@@ -73,7 +73,7 @@ class StandardTest extends PHPUnit_Framework_TestCase
      */
     public function it_should_populate_only_some_fixtures()
     {
-        $this->fixture->setConfig(['location' => __DIR__ . '/fixtures/standard']);
+        $this->fixture->setConfig(['location' => __DIR__ . '/../Fixtures/standard']);
         $this->fixture->up(['users']);
 
         list($userCount, $roleCount, $gameCount) = $this->getRecordCounts();
@@ -94,7 +94,7 @@ class StandardTest extends PHPUnit_Framework_TestCase
      */
     public function it_should_truncate_all_fixtures()
     {
-        $this->fixture->setConfig(['location' => __DIR__ . '/fixtures/standard']);
+        $this->fixture->setConfig(['location' => __DIR__ . '/../Fixtures/standard']);
         $this->fixture->up();
         $this->fixture->down();
 
