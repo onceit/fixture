@@ -13,7 +13,9 @@ class Crc32KeyGenerator implements KeyGeneratorInterface
      */
     public function __construct()
     {
-        define(__NAMESPACE__.'\MAX_ID', pow(2, 30) - 1);
+        if (!defined(__NAMESPACE__.'\MAX_ID')) {
+            define(__NAMESPACE__.'\MAX_ID', pow(2, 30) - 1);
+        }
     }
 
     /**
