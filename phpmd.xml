@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<rulesets>
+<ruleset>
     <rule ref="rulesets/cleancode.xml" />
     <rule ref="rulesets/codesize.xml" />
     <rule ref="rulesets/controversial.xml" />

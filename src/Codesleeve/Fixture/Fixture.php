@@ -3,6 +3,7 @@
 namespace Codesleeve\Fixture;
 
 use Codesleeve\Fixture\Drivers\DriverInterface;
+use Codesleeve\Fixture\Exceptions;
 use Faker\Generator;
 
 /**
@@ -177,7 +178,10 @@ class Fixture
     public function __call($name, $arguments)
     {
         if (!array_key_exists($name, $this->fixtures)) {
-            throw new Exceptions\InvalidFixtureNameException("Fixture: $name does not exist", 1);
+            throw new InvalidFixtureNameException(
+                sprintf("Fixture: %s does not exist", $name),
+                1
+            );
         }
 
         $fixture = $this->fixtures[$name];
@@ -201,7 +205,10 @@ class Fixture
         $location = $this->config['location'];
 
         if (!is_dir($location)) {
-            throw new Exceptions\InvalidFixtureLocationException("Could not find fixtures folder, please make sure $location exists", 1);
+            throw new InvalidFixtureLocationException(
+                sprintf("Could not find fixtures folder, please make sure %s exists", $location),
+                1
+            );
         }
 
         $this->loadFixtures($fixtures);
@@ -308,7 +315,10 @@ class Fixture
 
 
         if (!is_array($records)) {
-            throw new Exceptions\InvalidFixtureDataException("Invalid fixture: $fixture, please ensure this file returns an array of data.", 1);
+            throw new InvalidFixtureDataException(
+                sprintf("Invalid fixture: %s, please ensure this file returns an array of data.", $fixture),
+                1
+            );
         }
 
         $this->fixtures[$tableName] = $this->driver->buildRecords($tableName, $records);

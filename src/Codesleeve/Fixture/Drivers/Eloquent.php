@@ -49,7 +49,7 @@ class Eloquent extends PDODriver implements DriverInterface
 
         $fullyQualified = $this->namespace . '\\' . $className;
 
-        if (class_exists($fullyQualified)){
+        if (class_exists($fullyQualified)) {
             return $fullyQualified;
         };
 
@@ -173,11 +173,11 @@ class Eloquent extends PDODriver implements DriverInterface
      * The current syntax allows for pivot data to be provided
      * via a pipe delimiter with colon separated key values.
      * <code>
-     *    'Travis' => [
-     *        'first_name'   => 'Travis',
-     *        'last_name'    => 'Bennett',
-     *        'roles'		 => 'endUser|foo:bar, root'
-     *    ]
+     * 'Travis' => [
+     *    'first_name'   => 'Travis',
+     *    'last_name'    => 'Bennett',
+     *    'roles'        => 'endUser|foo:bar, root'
+     * ]
      * </code>
      *
      * @param  string $recordName The name of the relation the fixture is defined on (e.g Travis).
