@@ -3,7 +3,9 @@
 namespace Codesleeve\Fixture;
 
 use Codesleeve\Fixture\Drivers\DriverInterface;
-use Codesleeve\Fixture\Exceptions;
+use Codesleeve\Fixture\Exceptions\InvalidFixtureDataException;
+use Codesleeve\Fixture\Exceptions\InvalidFixtureLocationException;
+use Codesleeve\Fixture\Exceptions\InvalidFixtureNameException;
 use Faker\Generator;
 
 /**
