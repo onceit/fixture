@@ -13,8 +13,8 @@ class Crc32KeyGenerator implements KeyGeneratorInterface
      */
     public function __construct()
     {
-        if (!defined('Codesleeve\\Fixture\\KeyGenerators\\MAX_ID')) {
-            define('Codesleeve\\Fixture\\KeyGenerators\\MAX_ID', pow(2, 30) - 1);
+        if (!defined(__NAMESPACE__ . '\\MAX_ID')) {
+            define(__NAMESPACE__ . '\\MAX_ID', pow(2, 30) - 1);
         }
     }
 
@@ -23,6 +23,6 @@ class Crc32KeyGenerator implements KeyGeneratorInterface
      */
     public function generateKey($value)
     {
-        return (int)crc32($value) % constant('Codesleeve\\Fixture\\KeyGenerators\\MAX_ID');
+        return (int) crc32($value) % MAX_ID;
     }
 }
