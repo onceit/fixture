@@ -56,6 +56,27 @@ class PDODriver
     }
 
     /**
+     * Enables or disables integrit checks
+     *
+     * @param bool $check
+     */
+    protected function checkIntegrity($check = false)
+    {
+        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+        switch ($driver) {
+            case 'sqlite':
+                $sql = 'PRAGMA foreign_keys = %d;';
+                break;
+            case 'mysql':
+                $sql = 'SET @@foreign_key_checks = %d;';
+                break;
+        }
+
+        $this->db->exec(sprintf($sql, (int) $check));
+    }
+
+    /**
      * Truncate a table.
      */
     public function truncate()

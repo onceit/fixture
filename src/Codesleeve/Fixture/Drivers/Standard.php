@@ -11,11 +11,19 @@ class Standard extends PDODriver implements DriverInterface
     {
         array_push($this->tables, $tableName);
 
+        $this->checkIntegrity(false);
+        $this->db->beginTransaction();
+
         foreach ($fixtures as $label => &$fixture) {
             $fixture = $this->buildRecord($label, $fixture);
         }
 
-        return $this->persist($tableName, $fixtures);
+        $fixtures = $this->persist($tableName, $fixtures);
+
+        $this->db->commit();
+        $this->checkIntegrity(true);
+
+        return $fixtures;
     }
 
     /**

@@ -26,6 +26,7 @@ class Eloquent extends PDODriver implements DriverInterface
 
     /**
      * {@inheritDoc}
+     *
      * @param  string $namespace
      */
     public function __construct(PDO $pdo, KeyGeneratorInterface $keyGenerator = null, $namespace = '')
@@ -44,11 +45,19 @@ class Eloquent extends PDODriver implements DriverInterface
 
         $className = $this->resolveModelClass($tableName);
 
+        $this->checkIntegrity(false);
+        $this->db->beginTransaction();
+
         foreach ($fixtures as $label => &$fixture) {
             $fixture = $this->buildRecord($className, $label, $fixture);
         }
 
-        return $this->persist($fixtures);
+        $fixtures = $this->persist($fixtures);
+
+        $this->db->commit();
+        $this->checkIntegrity(true);
+
+        return $fixtures;
     }
 
     /**
@@ -154,7 +163,7 @@ class Eloquent extends PDODriver implements DriverInterface
     }
 
     /**
-     * Populates a belongs to value
+     * Populates a belongs to relation
      *
      * @param Model     $record   An instance of the record the relation is on
      * @param BelongsTo $relation An instance of the relation
@@ -166,6 +175,13 @@ class Eloquent extends PDODriver implements DriverInterface
         $record->$foreignKey = $this->generateKey($value);
     }
 
+    /**
+     * Populates a belongs to many relation(s)
+     *
+     * @param Model         $record   An instance of the record the relation is on
+     * @param BelongsToMany $relation An instance of the relation
+     * @param [type]        $value    The value(s) of the relation
+     */
     protected function populateBelongsToMany(Model $record, BelongsToMany $relation, $value)
     {
         // If the record has not yet been saved save it
