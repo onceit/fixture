@@ -2,11 +2,11 @@
 
 return [
     'george' => [
-        'id'   => 1,
         'name' => 'George the Monkey'
     ],
 
     'macca' => [
+        'id'   => 1,
         'name' => 'Macca the Monkey'
     ]
 ];
