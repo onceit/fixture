@@ -96,6 +96,17 @@ class EloquentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(959118195, $this->fixture->parrots('george')->pirate_id);
     }
 
+    public function testBelongsToManyRelationsArePopulated()
+    {
+        $this->fixture->up(['pirates', 'catchphrases']);
+        
+        $this->assertCount(3, $this->fixture->pirates('blackbeard')->catchphrases);
+        $this->assertEquals(
+            ['361330166', '361067094', '497172778'],
+            $this->fixture->pirates('blackbeard')->catchphrases->lists('id')
+        );
+    }
+
     public function testThrowsExceptionOnHasOne()
     {
         $this->fixture->setConfig([

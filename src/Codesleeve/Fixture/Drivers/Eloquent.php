@@ -7,6 +7,7 @@ use Codesleeve\Fixture\Exceptions\InvalidHasManyRelationException;
 use Codesleeve\Fixture\KeyGenerators\KeyGeneratorInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -131,6 +132,10 @@ class Eloquent extends PDODriver implements DriverInterface
             return $this->populateBelongsTo($record, $relation, $value);
         }
 
+        if ($relation instanceof BelongsToMany) {
+            return $this->populateBelongsToMany($record, $relation, $value);
+        }
+
         if ($relation instanceof HasOne) {
             throw new InvalidHasOneRelationException(sprintf(
                 'Can\'t set a HasOne relation on %s set a BelongsTo relation on %s instead.',
@@ -161,6 +166,16 @@ class Eloquent extends PDODriver implements DriverInterface
         $record->$foreignKey = $this->generateKey($value);
     }
 
+    protected function populateBelongsToMany(Model $record, BelongsToMany $relation, $value)
+    {
+        if (!$record->exists) {
+            $record->save();
+        }
+
+        $ids = array_map([$this, 'generateKey'], $value);
+        $relation->sync($ids);
+    }
+
     /**
      * Persist the fixtures to the database
      *
@@ -170,7 +185,7 @@ class Eloquent extends PDODriver implements DriverInterface
      */
     protected function persist($fixtures)
     {
-        foreach($fixtures as &$fixture) {
+        foreach ($fixtures as &$fixture) {
             $fixture->save();
         }
 

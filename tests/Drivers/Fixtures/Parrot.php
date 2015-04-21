@@ -8,8 +8,10 @@ class Parrot extends Model
 {
     protected $table = 'parrots';
 
+    public $timestamps = false;
+
     public function pirate()
     {
-        return $this->belongsTo( __NAMESPACE__ . '\\Pirate');
+        return $this->belongsTo(__NAMESPACE__ . '\\Pirate');
     }
 }

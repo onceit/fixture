@@ -11,6 +11,7 @@ return [
         'name' => 'Edward Teach',
         'title' => function ($record) {
             return sprintf('%s the Pirate!', $record->name);
-        }
+        },
+        'catchphrases' => ['batten', 'fishes', 'blow']
     ]
 ];

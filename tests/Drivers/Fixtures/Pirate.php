@@ -12,6 +12,11 @@ class Pirate extends Model
 
     public function parrot()
     {
-        return $this->hasOne( __NAMESPACE__ . '\\Parrot');
+        return $this->hasOne(__NAMESPACE__ . '\\Parrot');
+    }
+
+    public function catchphrases()
+    {
+        return $this->belongsToMany(__NAMESPACE__ . '\\Catchphrase', 'catchphrases_pirates');
     }
 }

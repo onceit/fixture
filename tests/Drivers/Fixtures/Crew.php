@@ -8,8 +8,10 @@ class Crew extends Model
 {
     protected $table = 'crew';
 
+    public $timestamps = false;
+
     public function boat()
     {
-        return $this->belongsTo( __NAMESPACE__ . '\\Boat');
+        return $this->belongsTo(__NAMESPACE__ . '\\Boat');
     }
 }

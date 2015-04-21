@@ -8,8 +8,10 @@ class Boat extends Model
 {
     protected $table = 'boats';
 
+    public $timestamps = false;
+
     public function crew()
     {
-        return $this->hasMany( __NAMESPACE__ . '\\Crew');
+        return $this->hasMany(__NAMESPACE__ . '\\Crew');
     }
 }
