@@ -19,14 +19,17 @@ class StandardTest extends \PHPUnit_Framework_TestCase
 
         $this->db = new PDO('sqlite::memory:');
         $this->db->exec(file_get_contents(
-            __DIR__ . '/Fixtures/setup.sql'
+            __DIR__ . '/../Fixtures/sql/sqlite/setup.sql'
         ));
         $this->fixture = new Fixture(
-            [
-                'location' => __DIR__ . '/../Fixtures/standard/'
-            ],
-            new Standard($this->db)
+            ['location' => __DIR__ . '/../Fixtures/standard/'],
+            $this->getDriver()
         );
+    }
+
+    private function getDriver()
+    {
+        return new Standard($this->db);
     }
 
     public function testStableIdsDoNotGetOverwitten()
@@ -70,7 +73,7 @@ class StandardTest extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         $this->db->exec(file_get_contents(
-            __DIR__ . '/Fixtures/teardown.sql'
+            __DIR__ . '/../Fixtures/sql/sqlite/teardown.sql'
         ));
     }
 }

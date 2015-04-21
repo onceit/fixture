@@ -27,18 +27,17 @@ class EloquentTest extends \PHPUnit_Framework_TestCase
 
         $this->db = $this->capsule->getConnection()->getPDO();
         $this->db->exec(file_get_contents(
-            __DIR__ . '/Fixtures/setup.sql'
+            __DIR__ . '/../Fixtures/sql/sqlite/setup.sql'
         ));
         $this->fixture = new Fixture(
-            [
-                'location' => __DIR__ . '/../Fixtures/orm/'
-            ],
-            new Eloquent(
-                $this->db,
-                null,
-                'Codesleeve\\Fixture\\Tests\\Fixtures'
-            )
+            ['location' => __DIR__ . '/../Fixtures/orm/'],
+            $this->getDriver()
         );
+    }
+
+    private function getDriver()
+    {
+        return new Eloquent($this->db, null, 'Codesleeve\\Fixture\\Tests\\Fixtures');
     }
 
     private function bootstrapEloquent()
@@ -148,7 +147,7 @@ class EloquentTest extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         $this->db->exec(file_get_contents(
-            __DIR__ . '/Fixtures/teardown.sql'
+            __DIR__ . '/../Fixtures/sql/sqlite/teardown.sql'
         ));
     }
 }
