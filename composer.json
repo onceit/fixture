@@ -12,7 +12,6 @@
     "require": {
         "php":">=5.4.0",
         "ext-mbstring":"*",
-        "fzaninotto/faker":"~1.4",
         "illuminate/support":"~5"
     },
     "require-dev": {
@@ -23,7 +22,8 @@
         "squizlabs/php_codesniffer":"~2"
     },
     "suggest": {
-        "illuminate/database":"Allows for use with Eloquent"
+        "illuminate/database":"Allows for use with Eloquent",
+        "fzaninotto/faker": "Allows faking data"
     },
     "autoload": {
         "psr-4": {

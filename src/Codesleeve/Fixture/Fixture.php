@@ -227,30 +227,6 @@ class Fixture
         $this->fixtures = [];
     }
 
-    /**
-     * Create fake data using Faker.
-     *
-     * @return mixed
-     */
-    public static function fake()
-    {
-        static::bootFaker();
-        $params = func_get_args();
-        $method = array_shift($params);
-
-        return call_user_func_array([static::$faker, $method], $params);
-    }
-
-    /**
-     * Create an instance of the faker method (if one doesn't already exist)
-     * and then hang it on this class as a static property.
-     *
-     * @return void
-     */
-    protected static function bootFaker()
-    {
-        static::$faker = static::$faker ?: \Faker\Factory::create();
-    }
 
     /**
      * Load fixtures.
