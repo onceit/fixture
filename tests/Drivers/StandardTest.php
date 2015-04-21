@@ -1,6 +1,6 @@
 <?php
 
-namespace Codesleeve\Fixture\Test\Drivers;
+namespace Codesleeve\Fixture\Tests\Drivers;
 
 use Codesleeve\Fixture\Fixture;
 use Codesleeve\Fixture\Drivers\Standard;

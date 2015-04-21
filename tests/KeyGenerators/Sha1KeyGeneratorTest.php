@@ -1,6 +1,6 @@
 <?php
 
-namespace Codesleeve\Fixture\Test\KeyGenerators;
+namespace Codesleeve\Fixture\Tests\KeyGenerators;
 
 use Codesleeve\Fixture\KeyGenerators\Sha1KeyGenerator;
 

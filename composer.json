@@ -1,27 +1,43 @@
 {
-    "name": "codesleeve/fixture",
-    "description": "A framework agnostic, simple (yet elegant) fixture library for php.",
-    "keywords": ["fixture", "test", "testing", "database", "integration"],
-    "license": "MIT",
+    "name":"codesleeve/fixture",
+    "description":"A framework agnostic, simple (yet elegant) fixture library for php.",
+    "keywords":["fixture", "test", "testing", "database", "integration"],
+    "license":"MIT",
     "authors": [
         {
-            "name": "Travis Bennett",
-            "email": "tandrewbennett@hotmail.com"
+            "name":"Travis Bennett",
+            "email":"tandrewbennett@hotmail.com"
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "fzaninotto/faker": "~1.4"
+        "php":">=5.4.0",
+        "ext-mbstring":"*",
+        "fzaninotto/faker":"~1.4",
+        "illuminate/support":"~5"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9",
-        "illuminate/support": "~5",
-        "illuminate/database": "~5",
-        "phpunit/phpunit": "~4.6"
+        "mockery/mockery":"~0.9",
+        "illuminate/database":"~5",
+        "phpunit/phpunit":"~4.6",
+        "phpmd/phpmd":"~2",
+        "squizlabs/php_codesniffer":"~2"
+    },
+    "suggest": {
+        "illuminate/database":"Allows for use with Eloquent"
     },
     "autoload": {
         "psr-4": {
-            "Codesleeve\\Fixture\\": "src/Codesleeve/Fixture/"
+            "Codesleeve\\Fixture\\":"src/Codesleeve/Fixture/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Codesleeve\\Fixture\\Tests\\":"tests/"
+        }
+    },
+    "scripts": {
+        "test":"phpunit",
+        "phpmd":"phpmd ./src/ text ./phpmd.xml --strict",
+        "phpcs":"phpcs ./src/ --standard=./phpcs.xml"
     }
 }

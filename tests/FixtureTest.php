@@ -1,6 +1,6 @@
 <?php
 
-namespace Codesleeve\Fixture\Test;
+namespace Codesleeve\Fixture\Tests;
 
 use Codesleeve\Fixture\Fixture;
 use Mockery as m;
