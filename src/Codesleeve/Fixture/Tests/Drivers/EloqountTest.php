@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use PDO;
 
-class Eloquent2Test extends \PHPUnit_Framework_TestCase
+class EloquentTest extends \PHPUnit_Framework_TestCase
 {
     protected $fixture;
     protected $db;
@@ -64,7 +64,7 @@ class Eloquent2Test extends \PHPUnit_Framework_TestCase
         ]);
         $this->fixture->up(['monkeys']);
 
-        $this->assertEquals(1, $this->fixture->monkeys('macca')->id);
+        $this->assertEquals(4999352782, $this->fixture->monkeys('macca')->id);
     }
 
     public function tearDown()
