@@ -8,6 +8,8 @@ use Illuminate\Database\SQLiteConnection;
 use Illuminate\Database\ConnectionResolver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Codesleeve\Fixture\Exceptions\InvalidHasOneRelationException;
+use Codesleeve\Fixture\Exceptions\InvalidHasManyRelationException;
 use PDO;
 
 class EloquentTest extends \PHPUnit_Framework_TestCase
@@ -63,7 +65,7 @@ class EloquentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(380982691, $this->fixture->parrots('george')->id);
     }
 
-    public function testAttributes()
+    public function testSetAttributes()
     {
         $this->fixture->up(['pirates']);
 
@@ -76,6 +78,34 @@ class EloquentTest extends \PHPUnit_Framework_TestCase
         $this->fixture->up(['parrots', 'pirates']);
 
         $this->assertEquals(959118195, $this->fixture->parrots('george')->pirate_id);
+    }
+
+    public function testThrowsExceptionOnHasOne()
+    {
+        $this->fixture->setConfig([
+            'location' => __DIR__ . '/../Fixtures/invalid'
+        ]);
+
+        $this->setExpectedException(
+            'Codesleeve\Fixture\Exceptions\InvalidHasOneRelationException',
+            'Can\'t set a HasOne relation on pirates set a BelongsTo relation on parrots instead.'
+        );
+
+        return $this->fixture->up(['pirates']);
+    }
+
+    public function testThrowExceptionOnHasMany()
+    {
+        $this->fixture->setConfig([
+            'location' => __DIR__ . '/../Fixtures/invalid'
+        ]);
+
+        $this->setExpectedException(
+            'Codesleeve\Fixture\Exceptions\InvalidHasManyRelationException',
+            'Can\'t set a HasMany relation on boats set a BelongsTo relation on crew instead.'
+        );
+
+        $this->fixture->up(['boats', 'crew']);
     }
 
     public function tearDown()

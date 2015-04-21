@@ -2,9 +2,13 @@
 
 namespace Codesleeve\Fixture\Drivers;
 
+use Codesleeve\Fixture\Exceptions\InvalidHasOneRelationException;
+use Codesleeve\Fixture\Exceptions\InvalidHasManyRelationException;
 use Codesleeve\Fixture\KeyGenerators\KeyGeneratorInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use InvalidArgumentException;
 use PDO;
@@ -117,9 +121,23 @@ class Eloquent extends PDODriver implements DriverInterface
     protected function evaluateRelation(Model $record, Relation $relation, $value)
     {
         if ($relation instanceof BelongsTo) {
-            $this->populateBelongsTo($record, $relation, $value);
+            return $this->populateBelongsTo($record, $relation, $value);
+        }
 
-            return;
+        if ($relation instanceof HasOne) {
+            throw new InvalidHasOneRelationException(sprintf(
+                'Can\'t set a HasOne relation on %s set a BelongsTo relation on %s instead.',
+                $record->getTable(),
+                explode('.', $relation->getForeignKey())[0]
+            ));
+        }
+
+        if ($relation instanceof HasMany) {
+            throw new InvalidHasManyRelationException(sprintf(
+                'Can\'t set a HasMany relation on %s set a BelongsTo relation on %s instead.',
+                $record->getTable(),
+                explode('.', $relation->getForeignKey())[0]
+            ));
         }
     }
 
