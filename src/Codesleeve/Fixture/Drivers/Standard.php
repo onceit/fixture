@@ -65,7 +65,7 @@ class Standard extends PDODriver implements DriverInterface
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute($fixture);
-            $fixture = (object)$fixture;
+            $fixture = (object) $fixture;
         }
 
         return $fixtures;
