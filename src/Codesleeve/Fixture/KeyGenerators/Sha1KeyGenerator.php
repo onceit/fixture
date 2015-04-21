@@ -26,6 +26,8 @@ class Sha1KeyGenerator implements KeyGeneratorInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @param mixed $value
      */
     public function generateKey($value)
     {

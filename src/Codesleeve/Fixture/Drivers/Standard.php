@@ -9,58 +9,55 @@ class Standard extends PDODriver implements DriverInterface
     /**
      * Build a fixture record using the passed in values.
      *
-     * @param  string $tableName
-     * @param  array $records
+     * @param  string $tableName  The table name to populate the fixtures with
+     * @param  array $fixture     An array of key => value arrays to build the records with
      * @return array
      */
-    public function buildRecords($tableName, array $records)
+    public function buildRecords($tableName, array $fixtures)
     {
-        $insertedRecords = [];
-        $this->tables[$tableName] = $tableName;
+        array_push($this->tables, $tableName);
 
-        foreach ($records as $recordName => $recordValues) {
-            array_walk($recordValues, function (&$value) use ($recordValues) {
-                if (is_callable($value)) {
-                    $value = call_user_func($value, $recordValues);
-                }
-            });
-
-            // Generate a hash for this record's primary key.  We'll simply hash the name of the
-            // fixture into an integer value so that related fixtures don't have to rely on
-            // an auto-incremented primary key when creating foreign keys.
-            $recordValues = $this->setForeignKeys($recordValues);
-            $recordValues = array_merge(['id' => $this->generateKey($recordName)], $recordValues);
-
-            $fields = implode(', ', array_keys($recordValues));
-            $values = array_values($recordValues);
-            $placeholders = rtrim(str_repeat('?, ', count($recordValues)), ', ');
-            $sql = "INSERT INTO $tableName ($fields) VALUES ($placeholders)";
-
-            $sth = $this->db->prepare($sql);
-            $sth->execute($values);
-
-            $insertedRecords[$recordName] = (object) $recordValues;
+        foreach ($fixtures as $label => &$fixture) {
+            $fixture = $this->buildRecord($label, $fixture);
         }
 
-        return $insertedRecords;
+        return $this->persist($tableName, $fixtures);
     }
 
-    /**
-     * Loop through each of the fixture column/values.
-     * If a column ends in '_id' we're going to assume it's
-     * a foreign key and we'll hash it's values.
-     *
-     * @param array $values
-     * @return array
-     */
-    protected function setForeignKeys(array $values)
+    protected function buildRecord($label, $fixture)
     {
-        foreach ($values as $key => &$value) {
+        // Generate this record's primary key. If its not set.
+        if (!isset($fixture['id'])) {
+            $fixture['id'] = $this->generateKey($label);
+        }
+
+        foreach ($fixture as $key => &$value) {
             if ($this->str->endsWith($key, '_id')) {
                 $value = $this->generateKey($value);
             }
         }
 
-        return $values;
+        return $fixture;
+    }
+
+    protected function persist($tableName, array $fixtures)
+    {
+        foreach ($fixtures as &$fixture) {
+            $placeholders = array_fill(0, count($fixture), '?');
+            $columns = array_keys($fixture);
+
+            $sql = sprintf(
+                "INSERT INTO %s (%s) VALUES (%s)",
+                $tableName,
+                implode(',', $columns),
+                implode(',', $placeholders)
+            );
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($fixture);
+            $fixture = (object) $fixture;
+        }
+
+        return $fixtures;
     }
 }

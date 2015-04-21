@@ -10,9 +10,9 @@ interface KeyGeneratorInterface
     /**
      * Generate a cache key for a given value.
      *
-     * @param mixed $value
+     * @param mixed $value The label to generate the key from
      *
-     * @return string|int
+     * @return mixed The generated key
      */
     public function generateKey($value);
 }

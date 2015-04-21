@@ -21,10 +21,8 @@ class Eloquent extends PDODriver implements DriverInterface
     protected $namespace;
 
     /**
-     * Constructor method
-     *
-     * @param  DatabaseManager $db
-     * @param  KeyGeneratorInterface $keyGenerator
+     * {@inheritDoc}
+     * @param  string $namespace
      */
     public function __construct(PDO $pdo, KeyGeneratorInterface $keyGenerator = null, $namespace = '')
     {
@@ -36,12 +34,12 @@ class Eloquent extends PDODriver implements DriverInterface
     /**
      * Resolves the fully qualified name of table's corresponding model
      *
-     * @param string $tableName
+     * @param  string $tableName
      * @return string
      *
      * @throws InvalidArgumentException if the class cant be resolved
      */
-    private function resolveModel($tableName)
+    private function resolveModelClass($tableName)
     {
         $className = $this->str->studly(
             $this->str->singular($tableName)
@@ -57,156 +55,100 @@ class Eloquent extends PDODriver implements DriverInterface
     }
 
     /**
-     * Build a fixture record using the passed in values.
-     *
-     * @param  string $tableName
-     * @param  array $records
-     * @return array
+     * {@inheritDoc}
      */
-    public function buildRecords($tableName, array $records)
+    public function buildRecords($tableName, array $fixtures)
     {
-        $insertedRecords = [];
-        $this->tables[$tableName] = $tableName;
+        array_push($this->tables, $tableName);
 
-        foreach ($records as $recordName => $recordValues) {
-            $model = $this->resolveModel($tableName);
-            $record = new $model;
-            $primaryKey = $record->getKeyName();
+        $className = $this->resolveModelClass($tableName);
 
-            // Generate this record's primary key. If its not set.
-            if (!isset($recordValues[$primaryKey])) {
-                $recordValues[$primaryKey] = $this->generateKey($recordName);
-            }
-
-            foreach ($recordValues as $columnName => $columnValue) {
-                $camelKey = camel_case($columnName);
-
-                // If a column name exists as a method on the model, we will just assume
-                // it is a relationship and we'll generate the primary key for it and store
-                // it as a foreign key on the model.
-                if (method_exists($record, $camelKey)) {
-                    $this->insertRelatedRecords($recordName, $record, $camelKey, $columnValue);
-
-                    continue;
-                }
-
-                if (is_callable($columnValue)) {
-                    $columnValue = call_user_func($columnValue, $record, $recordValues);
-                }
-
-                $record->$columnName = $columnValue;
-            }
-
-            $record->save();
-            $insertedRecords[$recordName] = $record;
+        foreach ($fixtures as $label => &$fixture) {
+            $fixture = $this->buildRecord($className, $label, $fixture);
         }
 
-        return $insertedRecords;
+        return $fixtures;
     }
 
     /**
-     * Insert related records for a fixture.
+     * Build an induvidual fixture's record
      *
-     * @param  string $recordName
-     * @param  Model $record
-     * @param  string $camelKey
-     * @param  string $columnValue
-     * @return void
+     * @param string $className The class name of the model to build
+     * @param string $label     The label of the fixture
+     * @param array  $fixture   A key => values array to build the record with
+     *
+     * @return Model
      */
-    protected function insertRelatedRecords($recordName, Model $record, $camelKey, $columnValue)
+    protected function buildRecord($className, $label, array $fixture)
     {
-        $relation = $record->$camelKey();
+        $record = new $className();
+        $primaryKey = $record->getKeyName();
 
+        // Generate this record's primary key. If its not set.
+        if (!isset($record->$primaryKey)) {
+            $record->$primaryKey = $this->generateKey($label);
+        }
+
+        foreach ($fixture as $column => $value) {
+            $attr = $this->str->camel($column);
+
+            // If a column name exists as a method on the model, we will just assume
+            // it is a relationship and we'll generate the primary key for it and store
+            // it as a foreign key on the model.
+            if (method_exists($record, $attr) && $record->$attr() instanceof Relation) {
+                $this->evaluateRelation($record, $record->$attr(), $value);
+
+                continue;
+            }
+
+            $record->$attr = $value;
+        }
+
+        return $record;
+    }
+
+    /**
+     * Evalutes the relation on a model and tries to populate it
+     *
+     * @param Model    $record   An instace of the record the relation is on
+     * @param Relation $relation An instance of the relation
+     * @param string   $value    The value of the relation
+     */
+    protected function evaluateRelation(Model $record, Relation $relation, $value)
+    {
         if ($relation instanceof BelongsTo) {
-            $this->insertBelongsTo($record, $relation, $columnValue);
-
-            return;
-        }
-
-        if ($relation instanceof BelongsToMany) {
-            $this->insertBelongsToMany($recordName, $relation, $columnValue);
+            $this->populateBelongsTo($record, $relation, $value);
 
             return;
         }
     }
 
     /**
-     * Insert a belongsTo foreign key relationship.
+     * Populates a belongs to value
      *
-     * @param  Model $record
-     * @param  Relation $relation
-     * @param  int $columnValue
-     * @return void
+     * @param Model     $record   An instace of the record the relation is on
+     * @param BelongsTo $relation An instance of the relation
+     * @param string    $value    The value of the relation
      */
-    protected function insertBelongsTo(Model $record, Relation $relation, $columnValue)
+    protected function populateBelongsTo(Model $record, BelongsTo $relation, $value)
     {
-        $foreignKeyName = $relation->getForeignKey();
-        $foreignKeyValue = $this->generateKey($columnValue);
-        $record->$foreignKeyName = $foreignKeyValue;
+        $foreignKey = $relation->getForeignKey();
+        $record->$foreignKey = $this->generateKey($value);
     }
 
     /**
-     * Insert a belongsToMany foreign key relationship.
+     * Persist the fixtures to the database
      *
-     * @param  string recordName
-     * @param  Relation $relation
-     * @param  int $columnValue
-     * @return void
-     */
-    protected function insertBelongsToMany($recordName, Relation $relation, $columnValue)
-    {
-        $joinTable = $relation->getTable();
-        $this->tables[] = $joinTable;
-        $relatedRecords = explode(',', str_replace(', ', ',', $columnValue));
-
-        foreach ($relatedRecords as $relatedRecord) {
-            list($fields, $values) = $this->buildBelongsToManyRecord($recordName, $relation, $relatedRecord);
-            $placeholders = rtrim(str_repeat('?, ', count($values)), ', ');
-            $sql = "INSERT INTO $joinTable ($fields) VALUES ($placeholders)";
-            $sth = $this->db->prepare($sql);
-            $sth->execute($values);
-        }
-    }
-
-    /**
-     * Parse the fixture data for belongsToManyRecord.
-     * The current syntax allows for pivot data to be provided
-     * via a pipe delimiter with colon separated key values.
-     * <code>
-     * 'Travis' => [
-     *    'first_name'   => 'Travis',
-     *    'last_name'    => 'Bennett',
-     *    'roles'        => 'endUser|foo:bar, root'
-     * ]
-     * </code>
+     * @param  array $fixtures The fixtures to persist
      *
-     * @param  string $recordName The name of the relation the fixture is defined on (e.g Travis).
-     * @param  Relation $relation The relationship oject (should be of type belongsToMany).
-     * @param  string $relatedRecord The related record data (e.g endUser|foo:bar or root).
-     * @return array
+     * @return array           The persisted records
      */
-    protected function buildBelongsToManyRecord($recordName, Relation $relation, $relatedRecord)
+    protected function persist($fixtures)
     {
-        $pivotColumns = explode('|', $relatedRecord);
-        $relatedRecordName = array_shift($pivotColumns);
+        array_walk($fixtures, function(&$fixture){
+            $fixture->save();
+        });
 
-        $foreignKeyPieces = explode('.', $relation->getForeignKey());
-        $foreignKeyName = $foreignKeyPieces[1];
-        $foreignKeyValue = $this->generateKey($recordName);
-
-        $otherKeyPieces = explode('.', $relation->getOtherKey());
-        $otherKeyName = $otherKeyPieces[1];
-        $otherKeyValue = $this->generateKey($relatedRecordName);
-
-        $fields = "$foreignKeyName, $otherKeyName";
-        $values = [$foreignKeyValue, $otherKeyValue];
-
-        foreach ($pivotColumns as $pivotColumn) {
-            list($columnName, $columnValue) = explode(':', $pivotColumn);
-            $fields .= ", $columnName";
-            $values[] = $columnValue;
-        }
-
-        return [$fields, $values];
+        return $fixtures;
     }
 }

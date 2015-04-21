@@ -59,7 +59,7 @@ class PDODriver
      */
     public function truncate()
     {
-        foreach ($this->tables as $table) {
+        foreach (array_unique($this->tables) as $table) {
             $this->db->query("DELETE FROM $table");
         }
 
