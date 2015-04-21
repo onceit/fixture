@@ -1,6 +1,6 @@
 <?php
 
-namespace Codesleeve\Fixture\Tests\Drivers\Fixtures;
+namespace Codesleeve\Fixture\Tests\Fixtures;
 
 use Illuminate\Database\Eloquent\Model;
 

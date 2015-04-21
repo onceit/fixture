@@ -36,7 +36,7 @@ class EloquentTest extends \PHPUnit_Framework_TestCase
             new Eloquent(
                 $this->db,
                 null,
-                'Codesleeve\\Fixture\\Tests\\Drivers\\Fixtures'
+                'Codesleeve\\Fixture\\Tests\\Fixtures'
             )
         );
     }
