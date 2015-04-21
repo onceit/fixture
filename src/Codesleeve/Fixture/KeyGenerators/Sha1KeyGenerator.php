@@ -5,7 +5,7 @@ namespace Codesleeve\Fixture\KeyGenerators;
 /**
  * Generates a key for a given value using the SHA1 hash.
  */
-class SHA1KeyGenerator implements KeyGeneratorInterface
+class Sha1KeyGenerator implements KeyGeneratorInterface
 {
     /**
      * The length to trim the sha hash to
