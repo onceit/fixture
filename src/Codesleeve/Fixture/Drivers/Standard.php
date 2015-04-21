@@ -34,6 +34,11 @@ class Standard extends PDODriver implements DriverInterface
         }
 
         foreach ($fixture as $key => &$value) {
+            // If the value is a function call it and set the attribute to the result
+            if (is_callable($value)) {
+                $value = $value($fixture);
+            }
+
             if ($this->str->endsWith($key, '_id')) {
                 $value = $this->generateKey($value);
             }

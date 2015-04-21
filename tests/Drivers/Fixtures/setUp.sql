@@ -1,7 +1,23 @@
 CREATE TABLE IF NOT EXISTS pirates (
   id INTEGER PRIMARY KEY,
   name TEXT,
+  title TEXT,
   catchphrase TEXT,
+  created_at DATETIME,
+  updated_at DATETIME
+);
+
+CREATE TABLE IF NOT EXISTS catchphrases_pirates (
+  catchphrase_id INTEGER,
+  pirate_id INTEGER,
+  created_at DATETIME,
+  updated_at DATETIME
+);
+
+CREATE TABLE IF NOT EXISTS catchphrases (
+  id INTEGER PRIMARY KEY,
+  name TEXT,
+  emotion TEXT,
   created_at DATETIME,
   updated_at DATETIME
 );
@@ -10,21 +26,6 @@ CREATE TABLE IF NOT EXISTS parrots (
   id INTEGER PRIMARY KEY,
   name TEXT,
   pirate_id INTEGER,
-  created_at DATETIME,
-  updated_at DATETIME
-);
-
-CREATE TABLE IF NOT EXISTS comebacks_parrots (
-  comeback_id INTEGER,
-  parrot_id INTEGER,
-  created_at DATETIME,
-  updated_at DATETIME
-);
-
-CREATE TABLE IF NOT EXISTS comebacks (
-  id INTEGER PRIMARY KEY,
-  name TEXT,
-  emotion TEXT,
   created_at DATETIME,
   updated_at DATETIME
 );

@@ -1,6 +1,6 @@
 DELETE FROM pirates;
+DELETE FROM catchphrases_pirates;
+DELETE FROM catchphrases;
 DELETE FROM parrots;
-DELETE FROM comebacks_parrots;
-DELETE FROM comebacks;
 DELETE FROM crew;
 DELETE FROM boats;

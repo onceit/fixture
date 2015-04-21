@@ -47,7 +47,7 @@ class Eloquent extends PDODriver implements DriverInterface
             $fixture = $this->buildRecord($className, $label, $fixture);
         }
 
-        return $fixtures;
+        return $this->persist($fixtures);
     }
 
     /**
@@ -95,6 +95,13 @@ class Eloquent extends PDODriver implements DriverInterface
 
         foreach ($fixture as $column => $value) {
             $attr = $this->str->camel($column);
+
+            // If the value is a function call it and set the attribute to the result
+            if (is_callable($value)) {
+                $record->$attr = $value($record);
+
+                continue;
+            }
 
             // If a column name exists as a method on the model, we will just assume
             // it is a relationship and we'll generate the primary key for it and store
@@ -163,9 +170,9 @@ class Eloquent extends PDODriver implements DriverInterface
      */
     protected function persist($fixtures)
     {
-        array_walk($fixtures, function (&$fixture) {
+        foreach($fixtures as &$fixture) {
             $fixture->save();
-        });
+        }
 
         return $fixtures;
     }

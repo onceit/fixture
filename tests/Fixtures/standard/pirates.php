@@ -2,14 +2,15 @@
 
 return [
     'reginald' => [
-        'name' => 'Reginald the Pirate',
-        'catchphrase' => 'Yar.'
+        'name' => 'Reginald'
     ],
     'redbeard' => [
-        'name' => 'Redbeard',
-        'catchphrase' => 'Avast!'
+        'name' => 'Redbeard'
     ],
     'blackbeard' => [
-        'name' => 'Edward Teach'
+        'name' => 'Edward Teach',
+        'title' => function ($record) {
+            return sprintf('%s the Pirate!', $record['name']);
+        }
     ]
 ];

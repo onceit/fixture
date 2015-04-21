@@ -12,6 +12,6 @@ return [
 
     'polly' => [
         'id' => 4,
-        'name'  => 'Polly'
+        'name' => 'Polly'
     ]
 ];
