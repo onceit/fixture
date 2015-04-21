@@ -168,12 +168,24 @@ class Eloquent extends PDODriver implements DriverInterface
 
     protected function populateBelongsToMany(Model $record, BelongsToMany $relation, $value)
     {
+        // If the record has not yet been saved save it
         if (!$record->exists) {
             $record->save();
         }
 
-        $ids = array_map([$this, 'generateKey'], $value);
-        $relation->sync($ids);
+        $sync = [];
+        foreach ($value as $key => $value) {
+            // Create an attribute array with the id as the key if there are pivot attributes
+            if (is_array($value)) {
+                $sync[$this->generateKey($key)] = $value;
+                continue;
+            }
+
+            $sync[] = $this->generateKey($value);
+        }
+
+        // Persist relations
+        $relation->sync($sync);
     }
 
     /**

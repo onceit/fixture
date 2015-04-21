@@ -2,7 +2,18 @@
 
 return [
     'reginald' => [
-        'name' => 'Reginald'
+        'name' => 'Reginald',
+        'catchphrases' => [
+            'batten' => [
+                'position' => 5
+            ],
+            'fishes' => [
+                'position' => 4
+            ],
+            'blow' => [
+                'position' => 3
+            ]
+        ]
     ],
     'redbeard' => [
         'name' => 'Redbeard'

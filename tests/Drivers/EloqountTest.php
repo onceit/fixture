@@ -99,12 +99,22 @@ class EloquentTest extends \PHPUnit_Framework_TestCase
     public function testBelongsToManyRelationsArePopulated()
     {
         $this->fixture->up(['pirates', 'catchphrases']);
-        
+
         $this->assertCount(3, $this->fixture->pirates('blackbeard')->catchphrases);
         $this->assertEquals(
             ['361330166', '361067094', '497172778'],
             $this->fixture->pirates('blackbeard')->catchphrases->lists('id')
         );
+    }
+
+    public function testBelongsToManyRelationsAndPivotArePopulated()
+    {
+        $this->fixture->up(['pirates', 'catchphrases']);
+        $positions = [];
+        foreach ($this->fixture->pirates('reginald')->catchphrases as $phrase) {
+            $positions[] = $phrase->pivot->position;
+        }
+        $this->assertEquals(['5', '4', '3'], $positions);
     }
 
     public function testThrowsExceptionOnHasOne()

@@ -12,6 +12,7 @@ class Catchphrase extends Model
 
     public function pirates()
     {
-        return $this->belongsToMany(__NAMESPACE__ . '\\Pirate', 'catchphrases_pirates');
+        return $this->belongsToMany(__NAMESPACE__ . '\\Pirate', 'catchphrases_pirates')
+            ->withPivot('position');
     }
 }
