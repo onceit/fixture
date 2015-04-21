@@ -5,7 +5,7 @@ namespace Codesleeve\Fixture\Drivers;
 use Codesleeve\Fixture\KeyGenerators\KeyGeneratorInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 use Illuminate\Database\Eloquent\Relations\Relation;
 use InvalidArgumentException;
 use PDO;
@@ -71,7 +71,7 @@ class Eloquent extends PDODriver implements DriverInterface
     }
 
     /**
-     * Build an induvidual fixture's record
+     * Build an individual fixture's record
      *
      * @param string $className The class name of the model to build
      * @param string $label     The label of the fixture
@@ -108,9 +108,9 @@ class Eloquent extends PDODriver implements DriverInterface
     }
 
     /**
-     * Evalutes the relation on a model and tries to populate it
+     * Evaluates the relation on a model and tries to populate it
      *
-     * @param Model    $record   An instace of the record the relation is on
+     * @param Model    $record   An instance of the record the relation is on
      * @param Relation $relation An instance of the relation
      * @param string   $value    The value of the relation
      */
@@ -126,7 +126,7 @@ class Eloquent extends PDODriver implements DriverInterface
     /**
      * Populates a belongs to value
      *
-     * @param Model     $record   An instace of the record the relation is on
+     * @param Model     $record   An instance of the record the relation is on
      * @param BelongsTo $relation An instance of the relation
      * @param string    $value    The value of the relation
      */

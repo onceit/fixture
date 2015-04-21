@@ -2,7 +2,7 @@
 
 namespace Codesleeve\Fixture\Drivers;
 
-use PDO;
+
 
 class Standard extends PDODriver implements DriverInterface
 {
@@ -10,7 +10,7 @@ class Standard extends PDODriver implements DriverInterface
      * Build a fixture record using the passed in values.
      *
      * @param  string $tableName  The table name to populate the fixtures with
-     * @param  array $fixture     An array of key => value arrays to build the records with
+     * @param  array $fixtures    An array of key => value arrays to build the records with
      * @return array
      */
     public function buildRecords($tableName, array $fixtures)

@@ -41,7 +41,7 @@ class PDODriver
      /**
      * Constructor method
      *
-     * @param  DatabaseManager $db
+     * @param  PDO $pdo
      * @param  KeyGeneratorInterface $keyGenerator
      */
     public function __construct(PDO $pdo, KeyGeneratorInterface $keyGenerator = null)

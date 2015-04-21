@@ -35,7 +35,7 @@ class Fixture
     /**
      * The ORM specific database driver that's being used.
      *
-     * @var Driver
+     * @var DriverInterface
      */
     protected $driver;
 
@@ -92,16 +92,6 @@ class Fixture
      * @return void
      */
     private function __clone()
-    {
-    }
-
-    /**
-     * Private unserialize method to prevent unserializing of the *Singleton*
-     * instance.
-     *
-     * @return void
-     */
-    private function __wakeup()
     {
     }
 
