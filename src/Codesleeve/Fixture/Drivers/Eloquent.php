@@ -5,7 +5,6 @@ namespace Codesleeve\Fixture\Drivers;
 use Codesleeve\Fixture\KeyGenerators\KeyGeneratorInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
 use Illuminate\Database\Eloquent\Relations\Relation;
 use InvalidArgumentException;
 use PDO;
@@ -32,9 +31,26 @@ class Eloquent extends PDODriver implements DriverInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function buildRecords($tableName, array $fixtures)
+    {
+        array_push($this->tables, $tableName);
+
+        $className = $this->resolveModelClass($tableName);
+
+        foreach ($fixtures as $label => &$fixture) {
+            $fixture = $this->buildRecord($className, $label, $fixture);
+        }
+
+        return $fixtures;
+    }
+
+    /**
      * Resolves the fully qualified name of table's corresponding model
      *
      * @param  string $tableName
+     *
      * @return string
      *
      * @throws InvalidArgumentException if the class cant be resolved
@@ -55,23 +71,7 @@ class Eloquent extends PDODriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function buildRecords($tableName, array $fixtures)
-    {
-        array_push($this->tables, $tableName);
-
-        $className = $this->resolveModelClass($tableName);
-
-        foreach ($fixtures as $label => &$fixture) {
-            $fixture = $this->buildRecord($className, $label, $fixture);
-        }
-
-        return $fixtures;
-    }
-
-    /**
-     * Build an individual fixture's record
+     * Build an individual fixture
      *
      * @param string $className The class name of the model to build
      * @param string $label     The label of the fixture
@@ -145,7 +145,7 @@ class Eloquent extends PDODriver implements DriverInterface
      */
     protected function persist($fixtures)
     {
-        array_walk($fixtures, function(&$fixture){
+        array_walk($fixtures, function (&$fixture) {
             $fixture->save();
         });
 

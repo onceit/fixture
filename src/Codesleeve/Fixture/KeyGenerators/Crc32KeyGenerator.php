@@ -23,6 +23,6 @@ class Crc32KeyGenerator implements KeyGeneratorInterface
      */
     public function generateKey($value)
     {
-        return (int) crc32($value) % constant('Codesleeve\\Fixture\\KeyGenerators\\MAX_ID');
+        return (int)crc32($value) % constant('Codesleeve\\Fixture\\KeyGenerators\\MAX_ID');
     }
 }

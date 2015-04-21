@@ -13,8 +13,8 @@ use Faker\Generator;
  *
  * @package Codesleeve/Fixture
  * @version v1.0.0
- * @author Travis Bennett <tandrewbennett@hotmail.com>
- * @link http://travisbennett.net
+ * @author  Travis Bennett <tandrewbennett@hotmail.com>
+ * @link    http://travisbennett.net
  */
 class Fixture
 {
@@ -50,8 +50,9 @@ class Fixture
      *
      * @staticvar Singleton $instance The *Singleton* instances of this class.
      *
-     * @param  array $config
+     * @param  array           $config
      * @param  DriverInterface $driver
+     *
      * @return Singleton The *Singleton* instance.
      */
     public static function getInstance(array $config = [], DriverInterface $driver = null)
@@ -164,7 +165,8 @@ class Fixture
      * This allows us to return fixture objects via method invocation.
      *
      * @param  string $name
-     * @param  array $arguments
+     * @param  array  $arguments
+     *
      * @return mixed
      */
     public function __call($name, $arguments)
@@ -189,6 +191,7 @@ class Fixture
      * Build fixtures.
      *
      * @param  array $fixtures
+     *
      * @throws Exceptions\InvalidFixtureLocationException
      * @return void
      */
@@ -222,6 +225,7 @@ class Fixture
      * Load fixtures.
      *
      * @param  array $fixtures
+     *
      * @return void
      */
     protected function loadFixtures($fixtures)
@@ -253,6 +257,7 @@ class Fixture
      * Load a only a subset of fixtures from the fixtures folder.
      *
      * @param  array $selectedFixtures
+     *
      * @return void
      */
     protected function loadSomeFixtures($selectedFixtures)
@@ -274,6 +279,7 @@ class Fixture
      * access as an array element or class property from our tests.
      *
      * @param  string $fixture
+     *
      * @return void
      */
     protected function loadFixture($fixture)

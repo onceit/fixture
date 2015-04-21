@@ -2,16 +2,10 @@
 
 namespace Codesleeve\Fixture\Drivers;
 
-
-
 class Standard extends PDODriver implements DriverInterface
 {
     /**
-     * Build a fixture record using the passed in values.
-     *
-     * @param  string $tableName  The table name to populate the fixtures with
-     * @param  array $fixtures    An array of key => value arrays to build the records with
-     * @return array
+     * {@inheritDoc}
      */
     public function buildRecords($tableName, array $fixtures)
     {
@@ -24,6 +18,14 @@ class Standard extends PDODriver implements DriverInterface
         return $this->persist($tableName, $fixtures);
     }
 
+    /**
+     * Build an individual fixture
+     *
+     * @param string $label   The label of the fixture
+     * @param array  $fixture A key => values array to build the fixture with
+     *
+     * @return array
+     */
     protected function buildRecord($label, $fixture)
     {
         // Generate this record's primary key. If its not set.
@@ -40,6 +42,14 @@ class Standard extends PDODriver implements DriverInterface
         return $fixture;
     }
 
+    /**
+     * Persist the fixtures to the database
+     *
+     * @param  string $tableName The table to persist to
+     * @param  array  $fixtures  The fixtures to persist
+     *
+     * @return array           The persisted records
+     */
     protected function persist($tableName, array $fixtures)
     {
         foreach ($fixtures as &$fixture) {
@@ -55,7 +65,7 @@ class Standard extends PDODriver implements DriverInterface
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute($fixture);
-            $fixture = (object) $fixture;
+            $fixture = (object)$fixture;
         }
 
         return $fixtures;

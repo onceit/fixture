@@ -2,8 +2,8 @@
 
 namespace Codesleeve\Fixture\Drivers;
 
-use Codesleeve\Fixture\KeyGenerators\KeyGeneratorInterface;
 use Codesleeve\Fixture\KeyGenerators\Crc32KeyGenerator;
+use Codesleeve\Fixture\KeyGenerators\KeyGeneratorInterface;
 use Illuminate\Support\Str;
 use PDO;
 
@@ -14,34 +14,34 @@ class PDODriver
      *
      * @var PDO
      */
-     protected $db;
+    protected $db;
 
     /**
      * An array of tables that have had fixture data loaded into them.
      *
      * @var array
      */
-     protected $tables = [];
+    protected $tables = [];
 
-     /**
-      * An instance of Laravel's Str class.
-      *
-      * @var Str
-      */
-     protected $str;
+    /**
+     * An instance of Laravel's Str class.
+     *
+     * @var Str
+     */
+    protected $str;
 
     /**
      * An instance of a key generator
      *
      * @var KeyGeneratorInterface
      */
-     protected $keyGenerator;
+    protected $keyGenerator;
 
 
-     /**
+    /**
      * Constructor method
      *
-     * @param  PDO $pdo
+     * @param  PDO                   $pdo
      * @param  KeyGeneratorInterface $keyGenerator
      */
     public function __construct(PDO $pdo, KeyGeneratorInterface $keyGenerator = null)
@@ -54,6 +54,7 @@ class PDODriver
         $this->db = $pdo;
         $this->keyGenerator = $keyGenerator;
     }
+
     /**
      * Truncate a table.
      */
