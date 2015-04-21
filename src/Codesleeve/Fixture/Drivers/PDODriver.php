@@ -3,7 +3,7 @@
 namespace Codesleeve\Fixture\Drivers;
 
 use Codesleeve\Fixture\KeyGenerators\KeyGeneratorInterface;
-use Codesleeve\Fixture\KeyGenerators\SHA1KeyGenerator;
+use Codesleeve\Fixture\KeyGenerators\Crc32KeyGenerator;
 use Illuminate\Support\Str;
 use PDO;
 
@@ -47,7 +47,7 @@ class PDODriver
     public function __construct(PDO $pdo, KeyGeneratorInterface $keyGenerator = null)
     {
         if ($keyGenerator === null) {
-            $keyGenerator = new SHA1KeyGenerator();
+            $keyGenerator = new Crc32KeyGenerator();
         }
 
         $this->str = new Str();
