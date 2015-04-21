@@ -29,7 +29,7 @@ class Standard extends PDODriver implements DriverInterface
             // fixture into an integer value so that related fixtures don't have to rely on
             // an auto-incremented primary key when creating foreign keys.
             $recordValues = $this->setForeignKeys($recordValues);
-            $recordValues = array_merge($recordValues, ['id' => $this->generateKey($recordName)]);
+            $recordValues = array_merge(['id' => $this->generateKey($recordName)], $recordValues);
 
             $fields = implode(', ', array_keys($recordValues));
             $values = array_values($recordValues);
@@ -56,23 +56,11 @@ class Standard extends PDODriver implements DriverInterface
     protected function setForeignKeys(array $values)
     {
         foreach ($values as $key => &$value) {
-            if ($this->endsWith($key, '_id')) {
+            if ($this->str->endsWith($key, '_id')) {
                 $value = $this->generateKey($value);
             }
         }
 
         return $values;
-    }
-
-    /**
-     * Determine if a string ends with a set of specified characters.
-     *
-     * @param  string $haystack
-     * @param  string $needle
-     * @return boolean
-     */
-    protected function endsWith($haystack, $needle)
-    {
-        return $needle === "" || substr($haystack, -strlen($needle)) === $needle;
     }
 }

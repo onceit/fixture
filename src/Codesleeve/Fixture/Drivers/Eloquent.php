@@ -3,13 +3,12 @@
 namespace Codesleeve\Fixture\Drivers;
 
 use Codesleeve\Fixture\KeyGenerators\KeyGeneratorInterface;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Str;
-use PDO;
 use InvalidArgumentException;
+use PDO;
 
 class Eloquent extends PDODriver implements DriverInterface
 {
@@ -22,13 +21,6 @@ class Eloquent extends PDODriver implements DriverInterface
     protected $namespace;
 
     /**
-     * An instance of Laravel's Str class.
-     *
-     * @var Str
-     */
-    protected $str;
-
-    /**
      * Constructor method
      *
      * @param  DatabaseManager $db
@@ -36,7 +28,6 @@ class Eloquent extends PDODriver implements DriverInterface
      */
     public function __construct(PDO $pdo, KeyGeneratorInterface $keyGenerator = null, $namespace = '')
     {
-        $this->str = new Str();
         $this->namespace = rtrim($namespace, '\\');
 
         parent::__construct($pdo, $keyGenerator);
@@ -80,6 +71,12 @@ class Eloquent extends PDODriver implements DriverInterface
         foreach ($records as $recordName => $recordValues) {
             $model = $this->resolveModel($tableName);
             $record = new $model;
+            $primaryKey = $record->getKeyName();
+
+            // Generate this record's primary key. If its not set.
+            if (!isset($recordValues[$primaryKey])) {
+                $recordValues[$primaryKey] = $this->generateKey($recordName);
+            }
 
             foreach ($recordValues as $columnName => $columnValue) {
                 $camelKey = camel_case($columnName);
@@ -100,11 +97,6 @@ class Eloquent extends PDODriver implements DriverInterface
                 $record->$columnName = $columnValue;
             }
 
-            // Generate a hash for this record's primary key.  We'll simply hash the name of the
-            // fixture into an integer value so that related fixtures don't have to rely on
-            // an auto-incremented primary key when creating foreign keys.
-            $primaryKeyName = $record->getKeyName();
-            $record->$primaryKeyName = $this->generateKey($recordName);
             $record->save();
             $insertedRecords[$recordName] = $record;
         }

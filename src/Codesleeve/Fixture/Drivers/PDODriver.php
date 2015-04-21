@@ -4,6 +4,7 @@ namespace Codesleeve\Fixture\Drivers;
 
 use Codesleeve\Fixture\KeyGenerators\KeyGeneratorInterface;
 use Codesleeve\Fixture\KeyGenerators\SHA1KeyGenerator;
+use Illuminate\Support\Str;
 use PDO;
 
 class PDODriver
@@ -21,6 +22,13 @@ class PDODriver
      * @var array
      */
      protected $tables = [];
+
+     /**
+      * An instance of Laravel's Str class.
+      *
+      * @var Str
+      */
+     protected $str;
 
     /**
      * An instance of a key generator
@@ -42,6 +50,7 @@ class PDODriver
             $keyGenerator = new SHA1KeyGenerator();
         }
 
+        $this->str = new Str();
         $this->db = $pdo;
         $this->keyGenerator = $keyGenerator;
     }
